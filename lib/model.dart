@@ -16,4 +16,8 @@ class FireStore {
   Future<void> deleteTodo(String docId) {
     return todos.doc(docId).delete();
   }
+
+  Future<void> updateTodo(String docId, String newTodo) {
+    return todos.doc(docId).update({'text': newTodo, 'time': Timestamp.now()});
+  }
 }

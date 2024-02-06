@@ -9,6 +9,31 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     FireStore obj = FireStore();
     TextEditingController text = TextEditingController();
+
+    void update(String docID) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(Icons.close)),
+                  IconButton(
+                      onPressed: () {
+                        obj.updateTodo(docID, text.text);
+                        text.clear();
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(Icons.check)),
+                ],
+                content: TextField(
+                  controller: text,
+                ),
+              ));
+    }
+
     void dialog() {
       showDialog(
           context: context,
@@ -55,7 +80,11 @@ class HomeScreen extends StatelessWidget {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+                      IconButton(
+                          onPressed: () {
+                            update(docID);
+                          },
+                          icon: Icon(Icons.edit)),
                       IconButton(
                           onPressed: () {
                             obj.deleteTodo(docID);
