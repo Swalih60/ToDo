@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:todo/model.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    FireStore obj = FireStore();
     TextEditingController text = TextEditingController();
     void dialog() {
-      AlertDialog(
-        content: TextField(
-          controller: text,
-        ),
-      );
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(Icons.close)),
+                  IconButton(
+                      onPressed: () {
+                        obj.addTodo(text.text);
+                        text.clear();
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(Icons.check)),
+                ],
+                content: TextField(
+                  controller: text,
+                ),
+              ));
     }
 
     return Scaffold(
