@@ -8,7 +8,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FireStore obj = FireStore();
-    TextEditingController text = TextEditingController();
+    TextEditingController text1 = TextEditingController();
+    TextEditingController text2 = TextEditingController();
 
     void update(String docID) {
       showDialog(
@@ -22,14 +23,14 @@ class HomeScreen extends StatelessWidget {
                       icon: Icon(Icons.close)),
                   IconButton(
                       onPressed: () {
-                        obj.updateTodo(docID, text.text);
-                        text.clear();
+                        obj.updateTodo(docID, text1.text);
+                        text1.clear();
                         Navigator.of(context).pop();
                       },
                       icon: Icon(Icons.check)),
                 ],
                 content: TextField(
-                  controller: text,
+                  controller: text1,
                 ),
               ));
     }
@@ -46,20 +47,21 @@ class HomeScreen extends StatelessWidget {
                       icon: Icon(Icons.close)),
                   IconButton(
                       onPressed: () {
-                        obj.addTodo(text.text);
-                        text.clear();
+                        obj.addTodo(text2.text);
+                        text2.clear();
                         Navigator.of(context).pop();
                       },
                       icon: Icon(Icons.check)),
                 ],
                 content: TextField(
-                  controller: text,
+                  controller: text2,
                 ),
               ));
     }
 
     return Scaffold(
       appBar: AppBar(
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.lock))],
         title: const Center(child: Text("TO DO")),
       ),
       body: StreamBuilder<QuerySnapshot>(
