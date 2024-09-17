@@ -24,4 +24,10 @@ class FireStore {
   Future<void> updateTodo(String docId, String newTodo) {
     return todos.doc(docId).update({'text': newTodo, 'time': Timestamp.now()});
   }
+
+  Future<void> updateClr(String docId, String clr) {
+    return todos.doc(docId).update({
+      'clr': clr,
+    });
+  }
 }

@@ -11,7 +11,23 @@ class HomeScreen extends StatelessWidget {
     TextEditingController text1 = TextEditingController();
     TextEditingController text2 = TextEditingController();
 
-    void clr(String docId) {}
+    final Map<String, Color> colorOptions = {
+      'None': Colors.transparent,
+      'Green': Colors.green,
+      'Orange': Colors.orange,
+      'Red': Colors.red,
+    };
+
+    final Map<String, Color> iconColors = {
+      'None': Colors.transparent,
+      'Green': Colors.green,
+      'Orange': Colors.orange,
+      'Red': Colors.red,
+    };
+
+    void updateColor(String docID, String selectedColor) {
+      obj.updateClr(docID, selectedColor);
+    }
 
     void delete(String docID) {
       showDialog(
@@ -24,13 +40,12 @@ class HomeScreen extends StatelessWidget {
               },
               child: const Text("No"),
             ),
-            SizedBox(
+            const SizedBox(
               width: 5,
             ),
             ElevatedButton(
               onPressed: () {
                 obj.deleteTodo(docID);
-
                 Navigator.of(context).pop();
               },
               child: const Text("Yes"),
@@ -83,19 +98,49 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.close)),
+                      icon: const Icon(Icons.close)),
                   IconButton(
                       onPressed: () {
                         obj.addTodo(text2.text);
                         text2.clear();
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.check)),
+                      icon: const Icon(Icons.check)),
                 ],
                 content: TextField(
                   controller: text2,
                 ),
               ));
+    }
+
+    void showColorDialog(String docID) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: iconColors.entries.map((entry) {
+              return GestureDetector(
+                onTap: () {
+                  updateColor(docID, entry.key);
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: entry.value,
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(color: Colors.black, width: 1),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      );
     }
 
     return Scaffold(
@@ -115,26 +160,42 @@ class HomeScreen extends StatelessWidget {
                 Map<String, dynamic> data =
                     document.data() as Map<String, dynamic>;
                 String todoText = data['text'];
+                String selectedColor = data['clr'] ?? 'None';
+
+                bool isColoredTile = selectedColor != 'None';
+
                 return ListTile(
-                  title: Text(todoText),
+                  tileColor: colorOptions[selectedColor] ?? Colors.transparent,
+                  title: Text(
+                    todoText,
+                    style: TextStyle(
+                      color: isColoredTile ? Colors.black : null,
+                    ),
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                          onPressed: () {
-                            clr(docID);
-                          },
-                          icon: const Icon(Icons.star)),
+                        onPressed: () {
+                          showColorDialog(docID);
+                        },
+                        icon: Icon(Icons.star,
+                            color: isColoredTile ? Colors.black : null),
+                      ),
                       IconButton(
-                          onPressed: () {
-                            update(docID, todoText);
-                          },
-                          icon: const Icon(Icons.edit)),
+                        onPressed: () {
+                          update(docID, todoText);
+                        },
+                        icon: Icon(Icons.edit,
+                            color: isColoredTile ? Colors.black : null),
+                      ),
                       IconButton(
-                          onPressed: () {
-                            delete(docID);
-                          },
-                          icon: const Icon(Icons.delete)),
+                        onPressed: () {
+                          delete(docID);
+                        },
+                        icon: Icon(Icons.delete,
+                            color: isColoredTile ? Colors.black : null),
+                      ),
                     ],
                   ),
                 );
@@ -151,16 +212,11 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {
           dialog();
         },
-        child: Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30), color: Colors.grey),
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-            size: 40,
-          ),
+        backgroundColor: Colors.grey,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 40,
         ),
       ),
     );
