@@ -11,7 +11,46 @@ class HomeScreen extends StatelessWidget {
     TextEditingController text1 = TextEditingController();
     TextEditingController text2 = TextEditingController();
 
-    void update(String docID) {
+    void clr(String docId) {}
+
+    void delete(String docID) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("No"),
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                obj.deleteTodo(docID);
+
+                Navigator.of(context).pop();
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+          content: const Text(
+            "Is this task really done and dusted my G?",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+
+    void update(String docID, String todoText) {
+      text1.text = todoText;
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -20,14 +59,14 @@ class HomeScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.close)),
+                      icon: const Icon(Icons.close)),
                   IconButton(
                       onPressed: () {
                         obj.updateTodo(docID, text1.text);
                         text1.clear();
                         Navigator.of(context).pop();
                       },
-                      icon: Icon(Icons.check)),
+                      icon: const Icon(Icons.check)),
                 ],
                 content: TextField(
                   controller: text1,
@@ -61,7 +100,6 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.lock))],
         title: const Center(child: Text("TO DO")),
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -84,14 +122,19 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       IconButton(
                           onPressed: () {
-                            update(docID);
+                            clr(docID);
                           },
-                          icon: Icon(Icons.edit)),
+                          icon: const Icon(Icons.star)),
                       IconButton(
                           onPressed: () {
-                            obj.deleteTodo(docID);
+                            update(docID, todoText);
                           },
-                          icon: Icon(Icons.delete)),
+                          icon: const Icon(Icons.edit)),
+                      IconButton(
+                          onPressed: () {
+                            delete(docID);
+                          },
+                          icon: const Icon(Icons.delete)),
                     ],
                   ),
                 );

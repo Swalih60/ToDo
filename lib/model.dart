@@ -5,7 +5,11 @@ class FireStore {
       FirebaseFirestore.instance.collection("todos");
 
   Future<void> addTodo(String todo) {
-    return todos.add({'text': todo, 'time': Timestamp.now()});
+    return todos.add({
+      'text': todo,
+      'time': Timestamp.now(),
+      "clr": " ",
+    });
   }
 
   Stream<QuerySnapshot> readTodo() {
