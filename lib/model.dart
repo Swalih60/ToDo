@@ -8,7 +8,8 @@ class FireStore {
     return todos.add({
       'text': todo,
       'time': Timestamp.now(),
-      "clr": " ",
+      'clr': 'None',
+      'completed': false,
     });
   }
 
@@ -28,6 +29,12 @@ class FireStore {
   Future<void> updateClr(String docId, String clr) {
     return todos.doc(docId).update({
       'clr': clr,
+    });
+  }
+
+  Future<void> updateCompletion(String docID, bool isCompleted) {
+    return todos.doc(docID).update({
+      'completed': isCompleted,
     });
   }
 }
